@@ -1,0 +1,6 @@
+﻿  main.cpp
+C:\CS3113\real_hw1\main.cpp(18,26): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+C:\CS3113\real_hw1\main.cpp(18,47): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+C:\CS3113\real_hw1\main.cpp(18,69): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+C:\CS3113\real_hw1\main.cpp(18,93): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  SDLProject.vcxproj -> C:\CS3113\real_hw1\Debug\SDLProject.exe
