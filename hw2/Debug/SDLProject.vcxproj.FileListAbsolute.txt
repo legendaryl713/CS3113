@@ -1,0 +1,4 @@
+C:\CS3113\CS3113-material\templates\VisualStudioSDLProject\SDLProject\Debug\Template.exe
+C:\CS3113\hw1\Debug\SDLProject.exe
+C:\CS3113\hw2\Debug\SDLProject.exe
+C:\CS3113\CS3113\hw2\Debug\SDLProject.exe
