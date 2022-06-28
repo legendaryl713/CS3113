@@ -82,22 +82,6 @@ GLuint load_texture(const char* filepath) {
     return textureID;
 }
 
-bool detect_collision(glm::vec3& one, glm::vec3& two, float one_height, float one_width, float two_height, float two_width) {
-    return sqrt(pow(two[0] - one[0], 2) + pow(two[1] - one[1], 2)) < 0.1f;
-
-    /*
-    float x = fabs(one[0] - two[0]) - ((one_width + two_width) / 2.0f);
-    float y = fabs(one[1] - two[1]) - ((one_height + two_height) / 2.0f);
-    
-    if (x < 0 && y < 0) {
-        return true;
-    }
-    else {
-        return false;
-    }
-    */
-}
-
 void initialize()
 {
     SDL_Init(SDL_INIT_VIDEO);
@@ -130,8 +114,6 @@ void initialize()
 
     player_texture_id3 = load_texture(PLAYER_SPRITE3);
 
-    //program.SetColor(TRIANGLE_RED, TRIANGLE_BLUE, TRIANGLE_GREEN, TRIANGLE_OPACITY);
-
     glUseProgram(program.programID);
 
     glClearColor(BG_RED, BG_BLUE, BG_GREEN, BG_OPACITY);
@@ -145,7 +127,7 @@ void process_input(){
     while (SDL_PollEvent(&event))
     {
         switch (event.type) {
-            // End game
+        // End game
         case SDL_QUIT:
         case SDL_WINDOWEVENT_CLOSE:
             GameIsRunning = false;
@@ -153,15 +135,7 @@ void process_input(){
 
         case SDL_KEYDOWN:
             switch (event.key.keysym.sym) {
-            case SDLK_LEFT:
-                // Move the player left
-                break;
-
-            case SDLK_RIGHT:
-                // Move the player right
-                //player_movement.x = 1.0f;
-                break;
-
+                //start the game
             case SDLK_f:
                 ball_movement.x = 1.0f;
                 ball_movement.y = 1.0f;
@@ -213,10 +187,11 @@ void process_input(){
 void update() { 
     
     
-    float ticks = (float)SDL_GetTicks() / 1000.0f; // get the current number of ticks
-    float delta_time = ticks - previous_ticks; // the delta time is the difference from the last frame
+    float ticks = (float)SDL_GetTicks() / 1000.0f; 
+    float delta_time = ticks - previous_ticks;
     previous_ticks = ticks;
 
+    //make sure paddles don't go out of the window
     if (player_position.y > 4.0f || player_position.y < -4.0f) {
         player_movement.y = -player_movement.y;
     }
@@ -224,10 +199,12 @@ void update() {
         player_movement2.y = -player_movement2.y;
     }
 
+    //make sure ball bounces when touches the window
     if (ball_position.y > 4.5f || ball_position.y < -4.5f) {
         ball_movement.y = -ball_movement.y;
     }
 
+    //make sure game stops when someone wins
     if (ball_position.x > 4.5f || ball_position.x < -4.5f) {
         ball_movement.x = 0;
         ball_movement.y = 0;
@@ -245,13 +222,12 @@ void update() {
     model_matrix_right_paddle = glm::mat4(1.0f);
     model_matrix_right_paddle = glm::translate(model_matrix_right_paddle, player_position2);
     player_movement2.y = 0.0f;
-
-    
     
     ball_position += ball_movement * 2.0f * delta_time;
     model_matrix_ball = glm::mat4(1.0f);
     model_matrix_ball = glm::translate(model_matrix_ball, ball_position);
 
+    //check collision between ball and the paddle
     if (fabs(ball_position.x-player_position2.x)< 0.08f && fabs(ball_position.y - player_position2.y)< 1.3f) {
         ball_movement.x = -ball_movement.x;
     }
@@ -265,23 +241,12 @@ void update() {
 void render() {
     
     glClear(GL_COLOR_BUFFER_BIT);
-
-
     
     float texture_coordinates[] = {
         0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
         0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f,
     };
-    
-    /*
-    float vertices[] =
-    {
-        -0.4f, -1.0f,
-        -0.2f, -1.0f,
-        -0.2f, 1.0f,
-        -0.4f, 1.0f
-    };
-    */
+
     float vertices[] =
     {
         -1.1f, -1.1f, -0.25f, -1.1f, -0.25f, 1.1f,
@@ -297,21 +262,11 @@ void render() {
     glEnableVertexAttribArray(program.texCoordAttribute);
 
     glBindTexture(GL_TEXTURE_2D, player_texture_id2);
-    //glDrawArrays(GL_LINE_LOOP, 0, 4);
+
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glDisableVertexAttribArray(program.positionAttribute);
     glDisableVertexAttribArray(program.texCoordAttribute);
 
-
-    /*
-    float vertices2[] =
-    {
-        0.4f, -1.0f,
-        0.2f, -1.0f,
-        0.2f, 1.0f,
-        0.4f, 1.0f
-    };
-    */
     program.SetModelMatrix(model_matrix_right_paddle);
 
     float vertices2[] =
@@ -327,7 +282,6 @@ void render() {
     glEnableVertexAttribArray(program.texCoordAttribute);
 
     glBindTexture(GL_TEXTURE_2D, player_texture_id);
-    //glDrawArrays(GL_LINE_LOOP, 0, 4);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glDisableVertexAttribArray(program.positionAttribute);
     glDisableVertexAttribArray(program.texCoordAttribute);
@@ -348,27 +302,9 @@ void render() {
     glEnableVertexAttribArray(program.texCoordAttribute);
 
     glBindTexture(GL_TEXTURE_2D, player_texture_id3);
-    //glDrawArrays(GL_LINE_LOOP, 0, 4);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glDisableVertexAttribArray(program.positionAttribute);
-    glDisableVertexAttribArray(program.texCoordAttribute);
-    //program.SetModelMatrix(model_matrix_ball);
-
-    /*
-    float vertices3[] =
-    {
-        -0.2f, -0.3f,
-        0.2f, -0.3f,
-        0.2f, 0.3f,
-        -0.2f, 0.3f
-    };
-
-    glVertexAttribPointer(program.positionAttribute, 2, GL_FLOAT, false, 0, vertices3);
-    glEnableVertexAttribArray(program.positionAttribute);
-    glDrawArrays(GL_LINE_LOOP, 0, 4);
-    glDisableVertexAttribArray(program.positionAttribute);
-    */
-    
+    glDisableVertexAttribArray(program.texCoordAttribute);  
 
     SDL_GL_SwapWindow(display_window);
 }
