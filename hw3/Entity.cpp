@@ -57,6 +57,7 @@ void Entity::update(float delta_time, Entity* collidable_entities, int collidabl
     
     
     velocity.x = movement.x * speed;
+    acceleration += movement * 3.0f;
     velocity += collided == false ? acceleration * delta_time : glm::vec3(0.0f);
     position += moving ? velocity * delta_time : glm::vec3(0.0f);
     std::cout << delta_time;
