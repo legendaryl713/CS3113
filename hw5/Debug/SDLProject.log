@@ -1,0 +1,4 @@
+﻿  LevelA.cpp
+C:\CS3113\hw5\Entity.h(112,56): warning C4244: 'return': conversion from 'const float' to 'const int', possible loss of data
+C:\CS3113\hw5\Entity.h(113,56): warning C4244: 'return': conversion from 'const float' to 'const int', possible loss of data
+  SDLProject.vcxproj -> C:\CS3113\hw5\Debug\SDLProject.exe
