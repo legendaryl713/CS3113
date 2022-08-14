@@ -10,6 +10,7 @@ LevelB::~LevelB()
     delete    this->state.player;
     delete    this->state.map;
     Mix_FreeChunk(this->state.jump_sfx);
+    Mix_FreeMusic(this->state.bgm);
 }
 
 void LevelB::initialise() {
@@ -139,9 +140,13 @@ void LevelB::initialise() {
     state.rocks[5].s_c = 26;
     state.rocks[5].value = 888;
 
-    //Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
-    //
-    //state.jump_sfx = Mix_LoadWAV("assets/hop.wav");
+    Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
+
+    state.bgm = Mix_LoadMUS("assets/menu.mp3");
+
+    Mix_PlayMusic(state.bgm, -1);
+
+    Mix_VolumeMusic(MIX_MAX_VOLUME / 4.0f);
 }
 
 void LevelB::update(float delta_time) {
@@ -174,5 +179,9 @@ void LevelB::render(ShaderProgram* program) {
     this->state.rocks[5].render3(program, vertices6);
     this->state.enemies[0].render3(program, verticesP);
 
-    Utility::draw_text(program, Utility::load_texture("assets/font1.png"), std::to_string(this->state.player->money), 0.5f, 0.01f, glm::vec3(-5.0f, 0.0f, 0.0f), true);
+    Utility::draw_text(program, Utility::load_texture("assets/font1.png"), "Gold:" + std::to_string(this->state.player->money), 0.5f, 0.01f, glm::vec3(-4.8f, 3.0f, 0.0f), true);
+    Utility::draw_text(program, Utility::load_texture("assets/font1.png"), "Goal:10000", 0.5f, 0.01f, glm::vec3(-4.8f, 2.0f, 0.0f), true);
+    Utility::draw_text(program, Utility::load_texture("assets/font1.png"), std::to_string(this->state.player->countdown), 0.5f, 0.01f, glm::vec3(4.0f, 3.5f, 0.0f), true);
+    Utility::draw_text(program, Utility::load_texture("assets/font1.png"), "YOU WIN!", 0.5f, 0.01f, glm::vec3(-1.0f, 1.0f, 0.0f), this->state.player->won);
+    Utility::draw_text(program, Utility::load_texture("assets/font1.png"), "YOU LOSE!", 0.5f, 0.01f, glm::vec3(-1.0f, 1.0f, 0.0f), this->state.player->lost);
 }

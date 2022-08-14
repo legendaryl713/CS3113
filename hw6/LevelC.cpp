@@ -43,7 +43,7 @@ void LevelC::initialise() {
     //player
     state.player = new Entity();
     state.player->set_entity_type(PLAYER);
-    state.player->set_position(glm::vec3(2.0f, 25.0f, 0.0f));
+    state.player->set_position(glm::vec3(2.0f, 55.0f, 0.0f));
     state.player->set_movement(glm::vec3(0.0f));
     state.player->speed = 2.5f;
     state.player->set_acceleration(glm::vec3(0.0f, -9.81f, 0.0f));
@@ -65,7 +65,7 @@ void LevelC::initialise() {
 
     state.player2 = new Entity();
     state.player2->set_entity_type(PLAYER);
-    state.player2->set_position(glm::vec3(2.0f, 25.0f, 0.0f));
+    state.player2->set_position(glm::vec3(2.0f, 55.0f, 0.0f));
     state.player2->set_movement(glm::vec3(0.0f));
     state.player2->speed = 2.5f;
     state.player2->set_acceleration(glm::vec3(0.0f, -9.81f, 0.0f));
@@ -92,6 +92,16 @@ void LevelC::initialise() {
     state.rocks = new Entity;
     state.rocks->set_entity_type(ROCK);
     state.rocks->texture_id = Utility::load_texture("assets/portal.png");
+
+    Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
+
+    state.jump_sfx = Mix_LoadWAV("assets/bounce.wav");
+
+    state.bgm = Mix_LoadMUS("assets/level_c.mp3");
+
+    Mix_PlayMusic(state.bgm, -1);
+
+    Mix_VolumeMusic(MIX_MAX_VOLUME / 4.0f);
 }
 
 void LevelC::update(float delta_time) {

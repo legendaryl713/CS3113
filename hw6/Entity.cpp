@@ -156,7 +156,6 @@ void Entity::ai_walker3() {
     model_matrix = glm::translate(model_matrix, glm::vec3(ai_walk_left, 0.0f, 0.0f));
 }
 
-
 void Entity::update(float delta_time, Entity* player, Entity* objects, int object_count, Map* map, int level) {
     if (animation_indices != NULL)
     {
@@ -181,10 +180,17 @@ void Entity::update(float delta_time, Entity* player, Entity* objects, int objec
     velocity.x = movement.x * speed;
     velocity.y = movement.y * speed;
     if (entity_type == PLAYER) {
+        times++;
+        if (times % 70 == 0 && times >= 70) {
+            countdown--;
+        }
+        if (countdown <= 0) {
+            lost = true;
+        }
         if (money >= 1000 && level == 1) {
             won = true;
         }
-        else if (money >= 2000 && level == 2) {
+        else if (money >= 10000 && level == 2) {
             won = true;
         }
         position.x += move ? velocity.x * delta_time : 0;

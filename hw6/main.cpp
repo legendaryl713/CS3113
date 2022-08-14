@@ -26,8 +26,6 @@
 #include "LevelC.h"
 #include "MainMenu.h"
 
-Mix_Music* music;
-
 bool not_menu = false;
 bool not_menu2 = false;
 const int WINDOW_WIDTH = 1200,
@@ -95,13 +93,6 @@ void initialise()
     program.SetProjectionMatrix(projection_matrix);
     program.SetViewMatrix(view_matrix);
 
-    /*Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
-    music = Mix_LoadMUS("assets/music.mp3");
-
-    Mix_PlayMusic(music, -1);
-
-    Mix_VolumeMusic(MIX_MAX_VOLUME / 4.0f);*/
-
     glUseProgram(program.programID);
 
     glClearColor(BG_RED, BG_BLUE, BG_GREEN, BG_OPACITY);
@@ -147,35 +138,6 @@ void process_input() {
             }
         }
     }
-    else if (current_scene == menu2) {
-        SDL_Event event;
-        while (SDL_PollEvent(&event))
-        {
-            switch (event.type) {
-            case SDL_QUIT:
-            case SDL_WINDOWEVENT_CLOSE:
-                game_is_running = false;
-                break;
-
-            case SDL_KEYDOWN:
-                switch (event.key.keysym.sym) {
-                case SDLK_q:
-                    game_is_running = false;
-                    break;
-
-                case SDLK_g:
-                    not_menu2 = true;
-                    break;
-
-                default:
-                    break;
-                }
-
-            default:
-                break;
-            }
-        }
-    }
     else if (current_scene == level_c) {
         current_scene->state.player->set_movement(glm::vec3(0.0f));
         current_scene->state.player2->set_movement(glm::vec3(0.0f));
@@ -198,15 +160,14 @@ void process_input() {
                     if (current_scene->state.player2->collided_bottom)
                     {
                         current_scene->state.player2->is_jumping = true;
-                        //Mix_PlayChannel(-1, current_scene->state.jump_sfx, 0);
+                        Mix_PlayChannel(-1, current_scene->state.jump_sfx, 0);
                     }
                     break;
                 case SDLK_SPACE:
-                    // Jump
                     if (current_scene->state.player->collided_bottom)
                     {
                         current_scene->state.player->is_jumping = true;
-                        //Mix_PlayChannel(-1, current_scene->state.jump_sfx, 0);
+                        Mix_PlayChannel(-1, current_scene->state.jump_sfx, 0);
                     }
                     break;
 
@@ -271,7 +232,7 @@ void process_input() {
                     game_is_running = false;
                     break;
                 case SDLK_SPACE:
-                    if (current_scene->state.player->move) {
+                    if (current_scene->state.player->move && !current_scene->state.player->won && !current_scene->state.player->lost) {
                         current_scene->state.player->moment_to_go = current_scene->state.player->frame_counter;
                         current_scene->state.player->move = false;
                     }
@@ -342,14 +303,10 @@ void render() {
 }
 
 void shutdown() {
-    Mix_FreeMusic(music);
-
     SDL_Quit();
 
     delete menu;
-
     delete level_a;
-
     delete level_b;
     delete level_c;
 }

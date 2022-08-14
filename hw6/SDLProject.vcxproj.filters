@@ -199,6 +199,11 @@
     <Media Include="assets\hop.wav">
       <Filter>Resource Files</Filter>
     </Media>
-    <Media Include="assets\music.mp3" />
+    <Media Include="assets\bounce.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="assets\level_a.mp3" />
+    <Media Include="assets\level_c.mp3" />
+    <Media Include="assets\menu.mp3" />
   </ItemGroup>
 </Project>

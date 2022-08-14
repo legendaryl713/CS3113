@@ -10,6 +10,7 @@ MainMenu::~MainMenu()
     delete    this->state.player;
     delete    this->state.map;
     Mix_FreeChunk(this->state.jump_sfx);
+    Mix_FreeMusic(this->state.bgm);
 }
 
 void MainMenu::initialise() {
@@ -33,7 +34,14 @@ void MainMenu::initialise() {
 
     this->state.player = NULL;
     this->state.enemies = NULL;
-    //this->state.rocks = NULL;
+
+    Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
+
+    state.bgm = Mix_LoadMUS("assets/menu.mp3");
+
+    Mix_PlayMusic(state.bgm, -1);
+
+    Mix_VolumeMusic(MIX_MAX_VOLUME / 4.0f);
 }
 
 void MainMenu::update(float delta_time) {

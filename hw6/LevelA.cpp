@@ -22,7 +22,20 @@ LevelA::~LevelA()
     delete    this->state.player;
     delete    this->state.map;
     Mix_FreeChunk(this->state.jump_sfx);
+    Mix_FreeMusic(this->state.bgm);
 }
+
+//void LevelA::timer(int minutes)
+//{
+//    int total_time = minutes * 60;
+//    this->state.player->times = total_time;
+//    time_t current_time = time(0);
+//    while (time(0) - current_time < total_time)
+//    {
+//        this->state.player->times--;
+//        Sleep(1000);
+//    }
+//}
 
 void LevelA::initialise() {
     GLuint font_texture_id = Utility::load_texture("assets/font1.png");
@@ -164,9 +177,13 @@ void LevelA::initialise() {
     state.rocks[10].s_c = 143;
     state.rocks[10].value = 180;
 
-    //Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
-    //
-    //state.jump_sfx = Mix_LoadWAV("assets/hop.wav");
+    Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
+
+    state.bgm = Mix_LoadMUS("assets/level_a.mp3");
+
+    Mix_PlayMusic(state.bgm, -1);
+
+    Mix_VolumeMusic(MIX_MAX_VOLUME / 4.0f);
 }
 
 void LevelA::update(float delta_time) {
@@ -178,7 +195,6 @@ void LevelA::update(float delta_time) {
 }
 
 void LevelA::render(ShaderProgram* program){
-
     float vertices1[] = { -1.0f, -3.64f, -0.1f, -3.64f, -0.1f, -1.5f, -1.0f, -3.64f, -0.1f, -1.5f, -1.0f, -1.5f };
     float vertices2[] = { -4.4f, -3.0f, -1.2f, -3.0f, -1.2f, 0.2f, -4.4f, -3.0f, -1.2f, 0.2f, -4.4f, 0.2f };
     float vertices3[] = { 2.0f, -4.0f, 5.2f, -4.0f, 5.2f, -0.8f, 2.0f, -4.0f, 5.2f, -0.8f, 2.0f, -0.8f };
@@ -208,5 +224,8 @@ void LevelA::render(ShaderProgram* program){
     this->state.rocks[10].render3(program, vertices11);
     this->state.rocks[8].render3(program, vertices9);
 
-    Utility::draw_text(program, Utility::load_texture("assets/font1.png"), std::to_string(this->state.player->money), 0.5f, 0.01f, glm::vec3(-3.0f, 0.0f, 0.0f), true);
+    Utility::draw_text(program, Utility::load_texture("assets/font1.png"), "Gold:" + std::to_string(this->state.player->money), 0.5f, 0.01f, glm::vec3(-4.8f, 3.0f, 0.0f), true);
+    Utility::draw_text(program, Utility::load_texture("assets/font1.png"), "Goal: 1000" , 0.5f, 0.01f, glm::vec3(-4.8f, 2.0f, 0.0f), true);
+    Utility::draw_text(program, Utility::load_texture("assets/font1.png"), std::to_string(this->state.player->countdown), 0.5f, 0.01f, glm::vec3(4.0f, 3.5f, 0.0f), true);
+    Utility::draw_text(program, Utility::load_texture("assets/font1.png"), "YOU LOSE!", 0.5f, 0.01f, glm::vec3(-0.8f, 0.0f, 0.0f), this->state.player->lost);
 }

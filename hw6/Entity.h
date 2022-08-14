@@ -47,6 +47,8 @@ public:
     bool down = false;
     bool lost = false;
     bool stop = false;
+    int times = 0;
+    int countdown = 60;
 
     static const int SECONDS_PER_FRAME = 4;
     static const int LEFT = 0,
@@ -79,6 +81,7 @@ public:
     Entity();
     ~Entity();
 
+    void timer(int minutes);
     void draw_sprite_from_texture_atlas(ShaderProgram* program, GLuint texture_id, int index);
     void draw_sprite_from_texture_atlas2(ShaderProgram* program, GLuint texture_id, int index, float vertices[]);
     void update(float delta_time, Entity* player, Entity* objects, int object_count, Map* map, int level);

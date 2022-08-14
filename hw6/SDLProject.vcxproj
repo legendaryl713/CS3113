@@ -201,8 +201,11 @@
     <Image Include="assets\walls.png" />
   </ItemGroup>
   <ItemGroup>
+    <Media Include="assets\bounce.wav" />
     <Media Include="assets\hop.wav" />
-    <Media Include="assets\music.mp3" />
+    <Media Include="assets\level_a.mp3" />
+    <Media Include="assets\level_c.mp3" />
+    <Media Include="assets\menu.mp3" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

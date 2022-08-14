@@ -1,4 +1,13 @@
-﻿  LevelC.cpp
-C:\CS3113\hw6\Entity.h(119,56): warning C4244: 'return': conversion from 'const float' to 'const int', possible loss of data
-C:\CS3113\hw6\Entity.h(120,56): warning C4244: 'return': conversion from 'const float' to 'const int', possible loss of data
+﻿  LevelA.cpp
+C:\CS3113\hw6\Entity.h(122,56): warning C4244: 'return': conversion from 'const float' to 'const int', possible loss of data
+C:\CS3113\hw6\Entity.h(123,56): warning C4244: 'return': conversion from 'const float' to 'const int', possible loss of data
+C:\CS3113\hw6\LevelA.cpp(186,36): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  LevelB.cpp
+C:\CS3113\hw6\Entity.h(122,56): warning C4244: 'return': conversion from 'const float' to 'const int', possible loss of data
+C:\CS3113\hw6\Entity.h(123,56): warning C4244: 'return': conversion from 'const float' to 'const int', possible loss of data
+C:\CS3113\hw6\LevelB.cpp(149,36): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  main.cpp
+C:\CS3113\hw6\Entity.h(122,56): warning C4244: 'return': conversion from 'const float' to 'const int', possible loss of data
+C:\CS3113\hw6\Entity.h(123,56): warning C4244: 'return': conversion from 'const float' to 'const int', possible loss of data
+  Generating Code...
   SDLProject.vcxproj -> C:\CS3113\hw6\Debug\SDLProject.exe
