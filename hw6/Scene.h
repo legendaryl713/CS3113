@@ -21,8 +21,10 @@ struct GameState {
     Entity* rocks;
     Entity* ship;
     Entity* player;
+    Entity* player2;
     Entity* enemies;
     Entity* bg;
+    Entity* platform;
 
     Mix_Music* bgm;
     Mix_Chunk* jump_sfx;

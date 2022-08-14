@@ -128,6 +128,72 @@
     <Image Include="assets\rock6.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="assets\picklerick.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\diamond1.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\diamond2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\font2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\font3.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\font4.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\font5.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\Users\13531\Downloads\fish.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\Users\13531\Downloads\jerry.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\Users\13531\Downloads\morty2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\Users\13531\Downloads\asset\hook3.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\Users\13531\Downloads\asset\bg3.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\morty3.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\mt.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\rk.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\pillar.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\morty4.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\morty5.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\walls.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\button.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\platform.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\portal.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Media Include="assets\hop.wav">

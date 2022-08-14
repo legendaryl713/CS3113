@@ -161,15 +161,36 @@
     </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\Users\13531\Downloads\asset\bg3.png" />
+    <Image Include="..\..\Users\13531\Downloads\asset\hook3.png" />
+    <Image Include="..\..\Users\13531\Downloads\fish.png" />
+    <Image Include="..\..\Users\13531\Downloads\jerry.png" />
+    <Image Include="..\..\Users\13531\Downloads\morty2.png" />
     <Image Include="..\hw6\assets\hook.png" />
     <Image Include="..\hw6\assets\rickship.png" />
     <Image Include="assets\alien.png" />
     <Image Include="assets\alien2.png" />
     <Image Include="assets\bg1.png" />
+    <Image Include="assets\button.png" />
+    <Image Include="assets\diamond1.png" />
+    <Image Include="assets\diamond2.png" />
     <Image Include="assets\font1.png" />
+    <Image Include="assets\font2.png" />
+    <Image Include="assets\font3.png" />
+    <Image Include="assets\font4.png" />
+    <Image Include="assets\font5.png" />
     <Image Include="assets\Layered Rock.png" />
+    <Image Include="assets\morty3.png" />
+    <Image Include="assets\morty4.png" />
+    <Image Include="assets\morty5.png" />
+    <Image Include="assets\mt.png" />
+    <Image Include="assets\picklerick.png" />
+    <Image Include="assets\pillar.png" />
     <Image Include="assets\planet1.png" />
     <Image Include="assets\planet2.png" />
+    <Image Include="assets\platform.png" />
+    <Image Include="assets\portal.png" />
+    <Image Include="assets\rk.png" />
     <Image Include="assets\rock.png" />
     <Image Include="assets\rock3.png" />
     <Image Include="assets\rock5.png" />
@@ -177,6 +198,7 @@
     <Image Include="assets\t2.png" />
     <Image Include="assets\t3.png" />
     <Image Include="assets\tileset.png" />
+    <Image Include="assets\walls.png" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="assets\hop.wav" />

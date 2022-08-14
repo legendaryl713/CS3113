@@ -38,7 +38,6 @@ public:
     void render(ShaderProgram *program);
     bool is_solid(glm::vec3 position, float *penetration_x, float *penetration_y);
     
-    // Getters
     int const get_width()  const  { return this->width;  }
     int const get_height() const  { return this->height; }
     

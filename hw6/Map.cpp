@@ -30,8 +30,8 @@ void Map::build()
             float tile_width = 1.0f/ (float) this->tile_count_x;
             float tile_height = 1.0f/ (float) this->tile_count_y;
             
-            float x_offset = -(this->tile_size / 2); // From center of tile
-            float y_offset = (this->tile_size / 2); // From center of tile
+            float x_offset = -(this->tile_size / 2); 
+            float y_offset = (this->tile_size / 2); 
             
             this->vertices.insert(vertices.end(), {
                 x_offset + (this->tile_size * x), y_offset + -this->tile_size * y,

@@ -3,7 +3,6 @@
 #define FIXED_TIMESTEP 0.0166666f
 #define LEVEL1_WIDTH 14
 #define LEVEL1_HEIGHT 8
-#define LEVEL1_LEFT_EDGE 5.0f
 
 #ifdef _WINDOWS
 #include <GL/glew.h>
@@ -23,18 +22,14 @@
 #include "Utility.h"
 #include "Scene.h"
 #include "LevelA.h"
-//#include "LevelB.h"
-//#include "LevelC.h"
-//#include "MainMenu.h"
-
-/**
- CONSTANTS
- */
+#include "LevelB.h"
+#include "LevelC.h"
+#include "MainMenu.h"
 
 Mix_Music* music;
 
 bool not_menu = false;
-
+bool not_menu2 = false;
 const int WINDOW_WIDTH = 1200,
 WINDOW_HEIGHT = 800;
 
@@ -53,14 +48,12 @@ F_SHADER_PATH[] = "shaders/fragment_textured.glsl";
 
 const float MILLISECONDS_IN_SECOND = 1000.0;
 
-/**
- VARIABLES
- */
 Scene* current_scene;
-//MainMenu* menu;
+MainMenu* menu;
+MainMenu* menu2;
 LevelA* level_a;
-//LevelB* level_b;
-//LevelC* level_c;
+LevelB* level_b;
+LevelC* level_c;
 
 SDL_Window* display_window;
 bool game_is_running = true;
@@ -113,141 +106,185 @@ void initialise()
 
     glClearColor(BG_RED, BG_BLUE, BG_GREEN, BG_OPACITY);
 
-    //menu = new MainMenu();
+    menu = new MainMenu();
+    menu2 = new MainMenu();
     level_a = new LevelA();
-    //level_b = new LevelB();
-    //level_c = new LevelC();
-    switch_to_scene(level_a);
+    level_b = new LevelB();
+    level_c = new LevelC();
+    switch_to_scene(menu);
 
-    // enable blending
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void process_input() {
-    SDL_Event event;
-
-    while (SDL_PollEvent(&event)) {
-        switch (event.type) {
-
-        case SDL_QUIT:
-
-        case SDL_WINDOWEVENT_CLOSE:
-            game_is_running = false;
-            break;
-
-        case SDL_KEYDOWN:
-            switch (event.key.keysym.sym) {
-            case SDLK_q:
-                // Quit the game with a keystroke
+    if (current_scene == menu) {
+        SDL_Event event;
+        while (SDL_PollEvent(&event))
+        {
+            switch (event.type) {
+            case SDL_QUIT:
+            case SDL_WINDOWEVENT_CLOSE:
                 game_is_running = false;
                 break;
-            case SDLK_SPACE:
-                if (current_scene->state.player->move) {
-                    current_scene->state.player->moment_to_go = current_scene->state.player->frame_counter;
-                    current_scene->state.player->move = false;
+
+            case SDL_KEYDOWN:
+                switch (event.key.keysym.sym) {
+                case SDLK_q:
+                    game_is_running = false;
+                    break;
+
+                case SDLK_RETURN:
+                    not_menu = true;
+                    break;
+
+                default:
+                    break;
                 }
-                break;
+
             default:
                 break;
             }
-
-        default:
-            break;
         }
     }
-    // VERY IMPORTANT: If nothing is pressed, we don't want to go anywhere
-    //if (current_scene == menu) {
-    //    SDL_Event event;
-    //    while (SDL_PollEvent(&event))
-    //    {
-    //        switch (event.type) {
-    //            // End game
-    //        case SDL_QUIT:
-    //        case SDL_WINDOWEVENT_CLOSE:
-    //            game_is_running = false;
-    //            break;
+    else if (current_scene == menu2) {
+        SDL_Event event;
+        while (SDL_PollEvent(&event))
+        {
+            switch (event.type) {
+            case SDL_QUIT:
+            case SDL_WINDOWEVENT_CLOSE:
+                game_is_running = false;
+                break;
 
-    //        case SDL_KEYDOWN:
-    //            switch (event.key.keysym.sym) {
-    //            case SDLK_q:
-    //                // Quit the game with a keystroke
-    //                game_is_running = false;
-    //                break;
+            case SDL_KEYDOWN:
+                switch (event.key.keysym.sym) {
+                case SDLK_q:
+                    game_is_running = false;
+                    break;
 
-    //            case SDLK_RETURN:
-    //                // start game
-    //                not_menu = true;
-    //                break;
+                case SDLK_g:
+                    not_menu2 = true;
+                    break;
 
-    //            default:
-    //                break;
-    //            }
+                default:
+                    break;
+                }
 
-    //        default:
-    //            break;
-    //        }
-    //    }
-    //}
-    //else {
-    //    current_scene->state.player->set_movement(glm::vec3(0.0f));
+            default:
+                break;
+            }
+        }
+    }
+    else if (current_scene == level_c) {
+        current_scene->state.player->set_movement(glm::vec3(0.0f));
+        current_scene->state.player2->set_movement(glm::vec3(0.0f));
 
-    //    SDL_Event event;
-    //    while (SDL_PollEvent(&event))
-    //    {
-    //        switch (event.type) {
-    //            // End game
-    //        case SDL_QUIT:
-    //        case SDL_WINDOWEVENT_CLOSE:
-    //            game_is_running = false;
-    //            break;
+        SDL_Event event;
+        while (SDL_PollEvent(&event))
+        {
+            switch (event.type) {
+            case SDL_QUIT:
+            case SDL_WINDOWEVENT_CLOSE:
+                game_is_running = false;
+                break;
 
-    //        case SDL_KEYDOWN:
-    //            switch (event.key.keysym.sym) {
-    //            case SDLK_q:
-    //                // Quit the game with a keystroke
-    //                game_is_running = false;
-    //                break;
+            case SDL_KEYDOWN:
+                switch (event.key.keysym.sym) {
+                case SDLK_q:
+                    game_is_running = false;
+                    break;
+                case SDLK_UP:
+                    if (current_scene->state.player2->collided_bottom)
+                    {
+                        current_scene->state.player2->is_jumping = true;
+                        //Mix_PlayChannel(-1, current_scene->state.jump_sfx, 0);
+                    }
+                    break;
+                case SDLK_SPACE:
+                    // Jump
+                    if (current_scene->state.player->collided_bottom)
+                    {
+                        current_scene->state.player->is_jumping = true;
+                        //Mix_PlayChannel(-1, current_scene->state.jump_sfx, 0);
+                    }
+                    break;
 
-    //            case SDLK_SPACE:
-    //                // Jump
-    //                if (current_scene->state.player->collided_bottom)
-    //                {
-    //                    current_scene->state.player->is_jumping = true;
-    //                    Mix_PlayChannel(-1, current_scene->state.jump_sfx, 0);
-    //                }
-    //                break;
+                default:
+                    break;
+                }
 
-    //            default:
-    //                break;
-    //            }
+            default:
+                break;
+            }
+        }
 
-    //        default:
-    //            break;
-    //        }
-    //    }
+        const Uint8* key_state = SDL_GetKeyboardState(NULL);
 
-    //    const Uint8* key_state = SDL_GetKeyboardState(NULL);
+        if (key_state[SDL_SCANCODE_A] && !current_scene->state.player->won)
+        {
+            current_scene->state.player->movement.x = -1.0f;
+            current_scene->state.player->animation_indices = current_scene->state.player->walking[current_scene->state.player->LEFT];
+        }
+        else if (key_state[SDL_SCANCODE_D] && !current_scene->state.player->won)
+        {
+            current_scene->state.player->movement.x = 1.0f;
+            current_scene->state.player->animation_indices = current_scene->state.player->walking[current_scene->state.player->RIGHT];
+        }
 
-    //    if (key_state[SDL_SCANCODE_A]) //&& !current_scene->state.player->lost && !current_scene->state.player->won
-    //    {
-    //        current_scene->state.player->movement.x = -1.0f;
-    //        current_scene->state.player->animation_indices = current_scene->state.player->walking[current_scene->state.player->LEFT];
-    //    }
-    //    else if (key_state[SDL_SCANCODE_D] ) //&& !current_scene->state.player->lost && !current_scene->state.player->won
-    //    {
-    //        current_scene->state.player->movement.x = 1.0f;
-    //        current_scene->state.player->animation_indices = current_scene->state.player->walking[current_scene->state.player->RIGHT];
-    //    }
+        if (key_state[SDL_SCANCODE_LEFT])
+        {
+            current_scene->state.player2->movement.x = -1.0f;
+            current_scene->state.player2->animation_indices = current_scene->state.player->walking[current_scene->state.player->LEFT];
+        }
+        else if (key_state[SDL_SCANCODE_RIGHT])
+        {
+            current_scene->state.player2->movement.x = 1.0f;
+            current_scene->state.player2->animation_indices = current_scene->state.player->walking[current_scene->state.player->RIGHT];
+        }
 
-    //    if (glm::length(current_scene->state.player->movement) > 1.0f)
-    //    {
-    //        current_scene->state.player->movement = glm::normalize(current_scene->state.player->movement);
-    //    }
-    //    if (glm::length(current_scene->state.enemies[0].movement) > 1.0f) {
-    //        current_scene->state.enemies[0].movement = glm::normalize(current_scene->state.enemies[0].movement);
-    //    }
-    //}
+        if (glm::length(current_scene->state.player->movement) > 1.0f)
+        {
+            current_scene->state.player->movement = glm::normalize(current_scene->state.player->movement);
+        }
+        if (glm::length(current_scene->state.player2->movement) > 1.0f)
+        {
+            current_scene->state.player2->movement = glm::normalize(current_scene->state.player2->movement);
+        }
+    }
+    else {
+        SDL_Event event;
+
+        while (SDL_PollEvent(&event)) {
+            switch (event.type) {
+
+            case SDL_QUIT:
+
+            case SDL_WINDOWEVENT_CLOSE:
+                game_is_running = false;
+                break;
+
+            case SDL_KEYDOWN:
+                switch (event.key.keysym.sym) {
+                case SDLK_q:
+                    // Quit the game with a keystroke
+                    game_is_running = false;
+                    break;
+                case SDLK_SPACE:
+                    if (current_scene->state.player->move) {
+                        current_scene->state.player->moment_to_go = current_scene->state.player->frame_counter;
+                        current_scene->state.player->move = false;
+                    }
+                    break;
+                default:
+                    break;
+                }
+
+            default:
+                break;
+            }
+        }
+    }
 }
 
 void update() {
@@ -272,30 +309,26 @@ void update() {
 
     accumulator = delta_time;
 
-
-    // Prevent the camera from showing anything outside of the "edge" of the level
     view_matrix = glm::mat4(1.0f);
 
-    /*if (current_scene == menu) {
-        if (not_menu)switch_to_scene(level_a);
-        return;
-    }*/
-
-    /*if (current_scene->state.player->get_position().x > LEVEL1_LEFT_EDGE) {
-        view_matrix = glm::translate(view_matrix, glm::vec3(-current_scene->state.player->get_position().x, 3.75, 0));
+    if (current_scene == menu) {
+        if (not_menu)switch_to_scene(level_c);
     }
-    else {
-        view_matrix = glm::translate(view_matrix, glm::vec3(-5, 3.75, 0));
-    }*/
-
-    //if (current_scene == level_a && current_scene->state.player->get_position().x > current_scene->state.enemies[2].get_position().x + 1.0f && current_scene->state.player->get_position().y < current_scene->state.enemies[2].get_position().y - 1.0f && current_scene->state.player->lvl1_won) {
-    //    switch_to_scene(level_b);
-    //    level_b->state.player->change_life(level_a->state.player->lives);
+    if (current_scene == level_c && current_scene->state.player->won) {
+        switch_to_scene(level_a);
+    }
+    if (current_scene == level_a && current_scene->state.player->won) {
+        switch_to_scene(level_b);
+        current_scene->state.player->add_money(level_a->state.player->money);
+    }
+    //if (current_scene == menu2) {
+    //    if (not_menu2)switch_to_scene(level_a);
     //}
-    //if (current_scene == level_b && current_scene->state.player->get_position().x > current_scene->state.enemies[2].get_position().x + 6.0f && current_scene->state.player->lvl2_won) {
-    //    switch_to_scene(level_c);
-    //    level_c->state.player->change_life(level_b->state.player->lives);
-    //}
+    if (current_scene == level_c) {
+        glm::vec3 v = -current_scene->state.player->get_position();
+        v.y -= 1.7f;
+        view_matrix = glm::translate(view_matrix, v);
+    }
 }
 
 void render() {
@@ -313,12 +346,12 @@ void shutdown() {
 
     SDL_Quit();
 
-    //delete menu;
+    delete menu;
 
     delete level_a;
 
-    //delete level_b;
-    //delete level_c;
+    delete level_b;
+    delete level_c;
 }
 
 int main(int argc, char* argv[])

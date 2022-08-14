@@ -64,20 +64,52 @@ void Entity::draw_sprite_from_texture_atlas(ShaderProgram* program, GLuint textu
     glDisableVertexAttribArray(program->texCoordAttribute);
 }
 
+void Entity::draw_sprite_from_texture_atlas2(ShaderProgram* program, GLuint texture_id, int index, float vertices[]) {
+    float u_coord = (float)(index % animation_cols) / (float)animation_cols;
+    float v_coord = (float)(index / animation_cols) / (float)animation_rows;
+
+    float width = 1.0f / (float)animation_cols;
+    float height = 1.0f / (float)animation_rows;
+
+    float tex_coords[] = {
+        u_coord, v_coord + height, u_coord + width, v_coord + height, u_coord + width, v_coord,
+        u_coord, v_coord + height, u_coord + width, v_coord, u_coord, v_coord
+    };
+
+    // Step 4: And render
+    glBindTexture(GL_TEXTURE_2D, texture_id);
+
+    glVertexAttribPointer(program->positionAttribute, 2, GL_FLOAT, false, 0, vertices);
+    glEnableVertexAttribArray(program->positionAttribute);
+
+    glVertexAttribPointer(program->texCoordAttribute, 2, GL_FLOAT, false, 0, tex_coords);
+    glEnableVertexAttribArray(program->texCoordAttribute);
+
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    glDisableVertexAttribArray(program->positionAttribute);
+    glDisableVertexAttribArray(program->texCoordAttribute);
+}
+
 void Entity::activate_ai(Entity* player) {
     switch (ai_type) {
 
     case WALKER:
         ai_walker();
         break;
-
+    case WALKER2:
+        ai_walker2();
+        break;
+    case WALKER3:
+        ai_walker3();
+        break;
     default:
         break;
     }
 }
 
 void Entity::ai_walker() {
-    if (ai_frames >= 150) {
+    if (ai_frames >= 220) {
         ai_walk_left *= -1.0f;
         ai_frames = 0;
         movement = glm::vec3(ai_walk_left, 0.0f, 0.0f);
@@ -89,13 +121,72 @@ void Entity::ai_walker() {
         }
     }
     ai_frames++;
+    model_matrix = glm::translate(model_matrix, glm::vec3(ai_walk_left, 0.0f, 0.0f));
 }
 
+void Entity::ai_walker2() {
+    if (ai_frames >= 450) {
+        ai_walk_left *= -1.0f;
+        ai_frames = 0;
+        movement = glm::vec3(ai_walk_left, 0.0f, 0.0f);
+        if (animation_indices == walking[RIGHT]) {
+            animation_indices = walking[LEFT];
+        }
+        else {
+            animation_indices = walking[RIGHT];
+        }
+    }
+    ai_frames++;
+    model_matrix = glm::translate(model_matrix, glm::vec3(ai_walk_left, ai_walk_left / -6.0f, 0.0f));
+}
+
+void Entity::ai_walker3() {
+    if (ai_frames >= 400) {
+        ai_walk_left *= -1.0f;
+        ai_frames = 0;
+        movement = glm::vec3(ai_walk_left, 0.0f, 0.0f);
+        if (animation_indices == walking[RIGHT]) {
+            animation_indices = walking[LEFT];
+        }
+        else {
+            animation_indices = walking[RIGHT];
+        }
+    }
+    ai_frames++;
+    model_matrix = glm::translate(model_matrix, glm::vec3(ai_walk_left, 0.0f, 0.0f));
+}
+
+
 void Entity::update(float delta_time, Entity* player, Entity* objects, int object_count, Map* map, int level) {
+    if (animation_indices != NULL)
+    {
+        if (glm::length(movement) != 0)
+        {
+            animation_time += delta_time;
+            float frames_per_second = (float)1 / SECONDS_PER_FRAME;
+
+            if (animation_time >= frames_per_second)
+            {
+                animation_time = 0.0f;
+                animation_index++;
+
+                if (animation_index >= animation_frames)
+                {
+                    animation_index = 0;
+                }
+            }
+        }
+    }
+
     velocity.x = movement.x * speed;
     velocity.y = movement.y * speed;
     if (entity_type == PLAYER) {
-        //lives = collided_top ? 1 : 2;
+        if (money >= 1000 && level == 1) {
+            won = true;
+        }
+        else if (money >= 2000 && level == 2) {
+            won = true;
+        }
         position.x += move ? velocity.x * delta_time : 0;
         if (!move) {
             position.y += move ? 0 : velocity.y * delta_time;
@@ -122,7 +213,7 @@ void Entity::update(float delta_time, Entity* player, Entity* objects, int objec
                 shrink_counter++;
                 frame_counter--;
                 if (collided_top == false && shrink_counter >= 240) {
-                    //lives2++;
+
                     frame_counter++;
                     shrink_counter = 0;
                     time_to_shrink = false;
@@ -130,7 +221,7 @@ void Entity::update(float delta_time, Entity* player, Entity* objects, int objec
                     s_c = 0;
                 }
                 else if (collided_top && shrink_counter >= s_c) {
-                    //lives++;
+
                     frame_counter++;
                     shrink_counter = 0;
                     time_to_shrink = false;
@@ -142,19 +233,16 @@ void Entity::update(float delta_time, Entity* player, Entity* objects, int objec
         }
 
         frame_counter++;
-        //f_c = frame_counter;
         if (frame_counter >= 370) {
             go_left = !go_left;
             frame_counter = 0;
         }
         if (go_left && move) {
             movement.x = -0.02f;
-            //model_matrix = glm::translate(model_matrix, glm::vec3(-0.08f, 0.0f, 0.0f));
             model_matrix = glm::translate(model_matrix, glm::vec3(-0.02f, 0.0f, 0.0f));
         }
         else if (!go_left && move) {
             movement.x = 0.02f;
-            //model_matrix = glm::translate(model_matrix, glm::vec3(0.08f, 0.0f, 0.0f));
             model_matrix = glm::translate(model_matrix, glm::vec3(0.02f, 0.0f, 0.0f));
         }
     }
@@ -169,7 +257,6 @@ void Entity::update(float delta_time, Entity* player, Entity* objects, int objec
         }
 
         frame_counter++;
-        //f_c = frame_counter;
         if (frame_counter >= 370) {
             go_left = !go_left;
             frame_counter = 0;
@@ -184,75 +271,90 @@ void Entity::update(float delta_time, Entity* player, Entity* objects, int objec
 
     else if (entity_type == ROCK) {
         if (player->collided_top && move == false && abs(player->get_position().x - get_position().x) < 0.1f && abs(player->get_position().y - get_position().y) < 0.5f) {
-            //lives++;
             move = true;
         }
         if (move) {
+            ai_type = DEAD;
+            animation_frames = 0;
             model_matrix = glm::translate(model_matrix, glm::vec3(0.0f, 0.025f, 0.0f));
             frame_counter++;
-            if (frame_counter >= s_c) {
+            if (frame_counter >= s_c && is_active) {
+                player->add_money(value);
                 deactivate();
                 model_matrix = glm::translate(model_matrix, glm::vec3(100.0f, 100.0f, 0.0f));
-                //move = false;
             }
         }
-        /*else if (frame_counter >= s_c) {
-            deactivate();
-        }*/
+        if (ai_type == WALKER || ai_type == WALKER2 || ai_type == WALKER3) {
+            position.x += move ? 0 : velocity.x * delta_time;
+            activate_ai(player);
+        }
     }
+}
 
-    /*if (!is_active) return;
-    if (entity_type == ENEMY && stop) { return; };
-    if (entity_type == PLAYER && lost) { return; };
+void Entity::update2(float delta_time, Entity* player, Entity* objects, int object_count, Map* map, int level, Entity* platform) {
+    if (entity_type == PLAYER) {
+        collided_top = false;
+        collided_bottom = false;
+        collided_left = false;
+        collided_right = false;
 
-    collided_top    = false;
-    collided_bottom = false;
-    collided_left   = false;
-    collided_right  = false;
-
-    if (animation_indices != NULL){
-        if (glm::length(movement) != 0)
-        {
-            animation_time += delta_time;
-            float frames_per_second = (float) 1 / SECONDS_PER_FRAME;
-
-            if (animation_time >= frames_per_second)
+        if (animation_indices != NULL) {
+            if (glm::length(movement) != 0)
             {
-                animation_time = 0.0f;
-                animation_index++;
+                animation_time += delta_time;
+                float frames_per_second = (float)1 / SECONDS_PER_FRAME;
 
-                if (animation_index >= animation_frames)
+                if (animation_time >= frames_per_second)
                 {
-                    animation_index = 0;
+                    animation_time = 0.0f;
+                    animation_index++;
+
+                    if (animation_index >= animation_frames)
+                    {
+                        animation_index = 0;
+                    }
                 }
             }
         }
-    }*/
+        if (is_jumping) {
+            is_jumping = false;
 
+            velocity.y += jumping_power;
+        }
+
+        if (fabs(position.x - 1.65) < 0.1f && fabs(position.y + 0.1) < 0.1f) {
+            won = true;
+        }
+
+        float ticks = (float)SDL_GetTicks() / 1000;
+        delta_time = ticks - previous_ticks;
+        previous_ticks = ticks;
+
+        velocity.x = movement.x * speed;
+        velocity += acceleration * delta_time;
+
+        position.y += collided_bottom ? 0 : velocity.y * delta_time;
+        check_collision_y(map);
+
+        position.x += velocity.x * delta_time;
+        check_collision_x(map);
+
+        model_matrix = glm::mat4(1.0f);
+        model_matrix = glm::translate(model_matrix, position);
+    }
 }
+
 void const Entity::check_collision_y(Entity* collidable_entities, int collidable_entity_count) {
     for (int i = 0; i < collidable_entity_count; i++) {
         Entity* collidable_entity = &collidable_entities[i];
         if (check_collision(collidable_entity)) {
-            //lives++;
             float y_distance = fabs(position.y - collidable_entity->position.y);
             float y_overlap = fabs(y_distance - (height / 2.0f) - (collidable_entity->height / 2.0f));
             collided_top = true;
             collidable_entity->collided_bottom = true;
-            //transfer_s_c(collidable_entity);
-            /*if (velocity.y > 0) {
-                collided_top = true;
-            }
-            else if (velocity.y < 0) {
-                collided_top = true;
-            }*/
         }
     }
 }
-
-//void Entity::transfer_s_c(Entity* entity) {
-//    entity->s_c = s_c;
-//}
 
 void const Entity::check_collision_x(Entity* collidable_entities, int collidable_entity_count) {
     for (int i = 0; i < collidable_entity_count; i++) {
@@ -280,7 +382,6 @@ void const Entity::check_collision_x(Entity* collidable_entities, int collidable
 }
 
 void const Entity::check_collision_y(Map* map) {
-    // Probes for tiles
     glm::vec3 top = glm::vec3(position.x, position.y + (height / 2), position.z);
     glm::vec3 top_left = glm::vec3(position.x - (width / 2), position.y + (height / 2), position.z);
     glm::vec3 top_right = glm::vec3(position.x + (width / 2), position.y + (height / 2), position.z);
@@ -326,8 +427,20 @@ void const Entity::check_collision_y(Map* map) {
     }
 }
 
+void const Entity::check_collision_y2(Entity* collidable_entities, int collidable_entity_count) {
+    for (int i = 0; i < collidable_entity_count; i++) {
+        Entity* collidable_entity = &collidable_entities[i];
+        if (check_collision2(collidable_entity)) {
+            lives++;
+            velocity.y = 0;
+            collided_bottom = true;
+            going_up = true;
+            collidable_entity->down = false;
+        }
+    }
+}
+
 void const Entity::check_collision_x(Map* map) {
-    // Probes for tiles
     glm::vec3 left = glm::vec3(position.x - (width / 2), position.y, position.z);
     glm::vec3 right = glm::vec3(position.x + (width / 2), position.y, position.z);
 
@@ -404,7 +517,7 @@ void Entity::render3(ShaderProgram* program, float vertices[]) {
     program->SetModelMatrix(model_matrix);
 
     if (animation_indices != NULL) {
-        draw_sprite_from_texture_atlas(program, texture_id, animation_indices[animation_index]);
+        draw_sprite_from_texture_atlas2(program, texture_id, animation_indices[animation_index], vertices);
         return;
     }
 
@@ -433,4 +546,16 @@ bool const Entity::check_collision(Entity* other)  const{
     float y_distance = fabs(position.y - other->position.y);
 
     return x_distance < 0.12f && y_distance < 0.45f;
+}
+
+bool const Entity::check_collision2(Entity* other) const {
+
+    if (other == this) return false;
+
+    if (!is_active || !other->is_active) return false;
+
+    float x_distance = fabs(position.x - other->position.x);
+    float y_distance = fabs(position.y - other->position.y);
+
+    return x_distance < 0.5f && y_distance < 0.5f;
 }
